@@ -30,6 +30,10 @@
 
 package me.lucasemanuel.publiceconomy.managers;
 
+import java.util.HashMap;
+
+import org.bukkit.inventory.ItemStack;
+
 import me.lucasemanuel.publiceconomy.Main;
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
@@ -37,9 +41,19 @@ public class MoneyManager {
 	
 	private ConsoleLogger logger;
 	
+	private HashMap<String, Integer> accounts;
+	
 	public MoneyManager(Main instance) {
 		logger = new ConsoleLogger(instance, "MoneyManager");
 		
+		accounts = new HashMap<String, Integer>();
+		
+		loadValues();
+		
 		logger.debug("Initiated");
+	}
+
+	public void giveMoneyForItems(String name, ItemStack[] contents) {
+		//TODO
 	}
 }

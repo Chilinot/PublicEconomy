@@ -96,6 +96,10 @@ public class Players implements Listener {
 				
 				// Do the other stuff!
 				
+				plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), chest.getInventory().getContents());
+				
+				chest.getInventory().clear();
+				
 				plugin.getChestManager().unblock(chest.getLocation());
 			}
 		}
