@@ -35,6 +35,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import me.lucasemanuel.publiceconomy.Main;
@@ -42,12 +43,11 @@ import me.lucasemanuel.publiceconomy.utils.SerializedLocation;
 
 public class ConcurrentSQLiteConnection {
 	
-	private Main plugin;
-	
+	private String folder;
 	private Connection con;
 	
 	public ConcurrentSQLiteConnection(Main instance) {
-		plugin = instance;
+		folder = "" + instance.getDataFolder();
 		getConnection();
 	}
 	
@@ -64,11 +64,12 @@ public class ConcurrentSQLiteConnection {
 	private synchronized void getConnection() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			con = DriverManager.getConnection("jdbc:sqlite:" + plugin.getDataFolder() + "/data.db");
+			con = DriverManager.getConnection("jdbc:sqlite:" + folder + "/data.sqlite");
 			
 			Statement stmt = con.createStatement();
 			
 			stmt.execute("CREATE TABLE IF NOT EXISTS shopchests (serial_position VARHCAR(250) NOT NULL PRIMARY KEY)");
+			stmt.execute("CREATE TABLE IF NOT EXISTS player_accounts (playername VARHCAR(250) NOT NULL PRIMARY KEY, balance DOUBLE(255,2))");
 			
 			stmt.close();
 		}
@@ -125,6 +126,42 @@ public class ConcurrentSQLiteConnection {
 		}
 		
 		return locations;
+	}
+
+	public synchronized void updateBalance(String playername, double m) {
+		testConnection();
+		
+		try {
+			Statement stmt = con.createStatement();
+			
+			stmt.executeUpdate("INSERT OR REPLACE INTO player_accounts VALUES('" + playername + "', " + m + ")");
+			
+			stmt.close();
+		}
+		catch (SQLException e) {
+			System.out.println("Error while updating balance for " + playername + "! Message: " + e.getMessage());
+		}
+	}
+
+	public HashMap<String, Double> retrieveAccounts() {
+		testConnection();
+		
+		try {
+			HashMap<String, Double> accounts = new HashMap<String, Double>();
+			
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM player_accounts");
+			
+			while(rs.next()) {
+				accounts.put(rs.getString("playername"), rs.getDouble("balance"));
+			}
+			
+			return accounts;
+		}
+		catch (SQLException e) {
+			System.out.println("Error while loading accounts! Message: " + e.getMessage());
+			return null;
+		}
 	}
 }
 

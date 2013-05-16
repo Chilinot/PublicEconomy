@@ -30,8 +30,19 @@
 
 package me.lucasemanuel.publiceconomy.managers;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import me.lucasemanuel.publiceconomy.Main;
@@ -39,21 +50,141 @@ import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
 public class MoneyManager {
 	
+	private Main plugin;
 	private ConsoleLogger logger;
 	
-	private HashMap<String, Integer> accounts;
+	private HashMap<String, Double> accounts;
+	private HashMap<String, Double> item_values;
 	
 	public MoneyManager(Main instance) {
+		plugin = instance;
 		logger = new ConsoleLogger(instance, "MoneyManager");
 		
-		accounts = new HashMap<String, Integer>();
+		accounts    = new HashMap<String, Double>();
+		item_values = new HashMap<String, Double>();
 		
 		loadValues();
+		loadAccounts();
 		
 		logger.debug("Initiated");
 	}
+	
+	private void loadAccounts() {
+		
+		HashMap<String, Double> loaded_accounts = plugin.getDataStorage().retrieveAccounts();
+		
+		if(loaded_accounts != null) {
+			for(Entry<String, Double> entry : loaded_accounts.entrySet()) {
+				accounts.put(entry.getKey(), entry.getValue());
+			}
+		}
+	}
+	
+	private void loadValues() {
+		
+		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "item_values.yml"));
+		
+		checkDefaults(config);
+		
+		for(String item_name : config.getKeys(true)) {
+			item_values.put(item_name, config.getDouble(item_name));
+		}
+	}
+	
+	private void checkDefaults(FileConfiguration config) {
+		
+		Set<Material> d_items = EnumSet.noneOf(Material.class);
+		Collections.addAll(d_items, Material.values());
+		
+		Set<Enchantment> d_ench = new HashSet<Enchantment>();
+		Collections.addAll(d_ench, Enchantment.values());
+		
+		boolean save = false;
+		
+		for(Material m : d_items) {
+			if(!config.contains("items." + m.name())) {
+				config.set("items." + m.name(), 10.0);
+				save = true;
+			}
+		}
+		
+		for(Enchantment e : d_ench) {
+			if(!config.contains("enchantments." + e.getName())) {
+				config.set("enchantments." + e.getName(), 20.0);
+				save = true;
+			}
+		}
+		
+		if(save) {
+			try {
+				config.save(this.plugin.getDataFolder() + File.separator + "item_values.yml");
+			} catch (IOException e) {
+				logger.severe("Could not save item_values.yml!");
+			}
+		}
+	}
 
-	public void giveMoneyForItems(String name, ItemStack[] contents) {
-		//TODO
+	public void giveMoneyForItems(final String playername, ItemStack[] contents) {
+		
+		double money = 0.0d;
+		
+		for(ItemStack i : contents) {
+			if(i == null) continue;
+			money += getValue(i);
+		}
+		
+		logger.debug("Adding money=" + money + " to player=" + playername);
+		
+		if(accounts.containsKey(playername)) {
+			money += accounts.get(playername);
+		}
+		
+		accounts.put(playername, money);
+		
+//		plugin.getScoreboardManager().updateBalance(playername);
+		
+		final double m = money;
+		
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			public void run() {
+				plugin.getDataStorage().updateBalance(playername, m);
+//				plugin.getMySQL().updateBalance(playername, m);
+			}
+		});
+		
+		logger.debug("Current balance=" + accounts.get(playername));
+	}
+	
+	public double getValue(ItemStack i) {
+		double value = 0.0d;
+		
+		value += item_values.get("items." + i.getType().name()) * i.getAmount();
+		
+		for(Entry<Enchantment, Integer> entry : i.getEnchantments().entrySet()) {
+			value += item_values.get("enchantments." + entry.getKey().getName()) * entry.getValue();
+		}
+		
+		double max = i.getType().getMaxDurability();
+		
+		if(max != 0.0) {
+			double dura = i.getDurability();
+			
+			double calc = (double) Math.round(((max - dura) / max) * 100) / 100;
+			
+			value *= calc;
+			
+			logger.debug("durability=" + dura + " max=" + max + " calculated=" + calc);
+		}
+		
+		logger.debug("value=" + value);
+		
+		return value;
+	}
+	
+	public double getBalance(String playername) {
+		if(accounts.containsKey(playername))
+			return accounts.get(playername);
+		else
+			return 0.0d;
 	}
 }
