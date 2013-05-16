@@ -93,9 +93,6 @@ public class Players implements Listener {
 			Chest chest = (Chest) inv.getHolder();
 			
 			if(plugin.getChestManager().isShopChest(chest.getLocation())) {
-				
-				// Do the other stuff!
-				
 				plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), chest.getInventory().getContents());
 				
 				chest.getInventory().clear();

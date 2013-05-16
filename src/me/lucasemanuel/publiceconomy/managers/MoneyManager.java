@@ -40,6 +40,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -158,6 +160,8 @@ public class MoneyManager {
 		}
 		
 		logger.debug("Adding money=" + money + " to player=" + playername);
+		
+		Bukkit.getPlayerExact(playername).sendMessage("Du tjänade " + ChatColor.GOLD + money + ChatColor.WHITE + " kr.");
 		
 		if(accounts.containsKey(playername)) {
 			money += accounts.get(playername);
