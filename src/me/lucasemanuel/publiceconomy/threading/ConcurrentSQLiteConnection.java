@@ -156,6 +156,9 @@ public class ConcurrentSQLiteConnection {
 				accounts.put(rs.getString("playername"), rs.getDouble("balance"));
 			}
 			
+			rs.close();
+			stmt.close();
+			
 			return accounts;
 		}
 		catch (SQLException e) {

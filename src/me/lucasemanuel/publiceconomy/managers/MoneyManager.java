@@ -32,6 +32,7 @@ package me.lucasemanuel.publiceconomy.managers;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import me.lucasemanuel.publiceconomy.Main;
+import me.lucasemanuel.publiceconomy.threading.ConcurrentMySQLConnection;
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
 public class MoneyManager {
@@ -53,12 +55,34 @@ public class MoneyManager {
 	private Main plugin;
 	private ConsoleLogger logger;
 	
+	private ConcurrentMySQLConnection mysql;
+	
 	private HashMap<String, Double> accounts;
 	private HashMap<String, Double> item_values;
 	
 	public MoneyManager(Main instance) {
 		plugin = instance;
 		logger = new ConsoleLogger(instance, "MoneyManager");
+		
+		String username  = instance.getConfig().getString("database.auth.username");
+		String password  = instance.getConfig().getString("database.auth.password");
+		String host      = instance.getConfig().getString("database.settings.host");
+		int    port      = instance.getConfig().getInt   ("database.settings.port");
+		String database  = instance.getConfig().getString("database.settings.database");
+		String tablename = instance.getConfig().getString("database.settings.tablename");
+		
+		mysql = new ConcurrentMySQLConnection(username, password, host, port, database, tablename);
+		
+		logger.info("Testing connection towards MySQL-server, please wait...");
+		
+		try {
+			mysql.testConnection();
+			
+			logger.info("Successfully connected!");
+		}
+		catch (ClassNotFoundException | SQLException e) {
+			logger.severe("Could not connect to the MySQL-server! Message: " + e.getMessage());
+		}
 		
 		accounts    = new HashMap<String, Double>();
 		item_values = new HashMap<String, Double>();
@@ -148,7 +172,7 @@ public class MoneyManager {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			public void run() {
 				plugin.getDataStorage().updateBalance(playername, m);
-//				plugin.getMySQL().updateBalance(playername, m);
+				mysql.update(playername, m);
 			}
 		});
 		

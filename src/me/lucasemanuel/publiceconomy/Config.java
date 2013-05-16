@@ -48,6 +48,38 @@ public class Config {
 			save = true;
 		}
 		
+		// MySQL
+		
+		if(!config.contains("database.auth.username")) {
+			config.set("database.auth.username", "username");
+			save = true;
+		}
+		
+		if(!config.contains("database.auth.password")) {
+			config.set("database.auth.password", "password");
+			save = true;
+		}
+		
+		if(!config.contains("database.settings.host")) {
+			config.set("database.settings.host", "localhost");
+			save = true;
+		}
+		
+		if(!config.contains("database.settings.port")) {
+			config.set("database.settings.port", 3306);
+			save = true;
+		}
+				
+		if(!config.contains("database.settings.database")) {
+			config.set("database.settings.database", "publiceconomy");
+			save = true;
+		}
+		
+		if(!config.contains("database.settings.tablename")) {
+			config.set("database.settings.tablename", "player_accounts");
+			save = true;
+		}
+		
 		
 		
 		if(save) {
