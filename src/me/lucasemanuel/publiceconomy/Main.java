@@ -33,6 +33,7 @@ package me.lucasemanuel.publiceconomy;
 import me.lucasemanuel.publiceconomy.listeners.Players;
 import me.lucasemanuel.publiceconomy.managers.ChestManager;
 import me.lucasemanuel.publiceconomy.managers.MoneyManager;
+import me.lucasemanuel.publiceconomy.managers.ScoreboardManager;
 import me.lucasemanuel.publiceconomy.threading.ConcurrentSQLiteConnection;
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
@@ -45,6 +46,7 @@ public class Main extends JavaPlugin {
 	private ConcurrentSQLiteConnection data;
 	private ChestManager chestmanager;
 	private MoneyManager moneymanager;
+	private ScoreboardManager sm;
 	
 	public void onEnable() {
 		
@@ -59,6 +61,7 @@ public class Main extends JavaPlugin {
 		data         = new ConcurrentSQLiteConnection(this);
 		chestmanager = new ChestManager(this);
 		moneymanager = new MoneyManager(this);
+		sm           = new ScoreboardManager(this);
 		
 		
 		logger.debug("Registering eventlisteners...");
@@ -85,5 +88,9 @@ public class Main extends JavaPlugin {
 
 	public MoneyManager getMoneyManager() {
 		return moneymanager;
+	}
+
+	public ScoreboardManager getScoreboardManager() {
+		return sm;
 	}
 }

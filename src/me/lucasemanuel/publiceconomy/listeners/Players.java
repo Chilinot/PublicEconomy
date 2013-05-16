@@ -42,6 +42,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 
 public class Players implements Listener {
@@ -54,6 +56,16 @@ public class Players implements Listener {
 		logger = new ConsoleLogger(instance, "PlayerListener");
 		
 		logger.debug("Initiated");
+	}
+	
+	@EventHandler(ignoreCancelled=true)
+	public void onPlayerLogin(PlayerLoginEvent event) {
+		plugin.getScoreboardManager().addPlayer(event.getPlayer());
+	}
+	
+	@EventHandler(ignoreCancelled=true)
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		plugin.getScoreboardManager().removePlayer(event.getPlayer());
 	}
 	
 	@EventHandler(ignoreCancelled=true)

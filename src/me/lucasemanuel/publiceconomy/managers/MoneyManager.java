@@ -161,7 +161,8 @@ public class MoneyManager {
 		
 		logger.debug("Adding money=" + money + " to player=" + playername);
 		
-		Bukkit.getPlayerExact(playername).sendMessage("Du tjänade " + ChatColor.GOLD + money + ChatColor.WHITE + " kr.");
+		if(money != 0.0)
+			Bukkit.getPlayerExact(playername).sendMessage("Du tjänade " + ChatColor.GOLD + money + ChatColor.WHITE + " kr.");
 		
 		if(accounts.containsKey(playername)) {
 			money += accounts.get(playername);
@@ -169,7 +170,7 @@ public class MoneyManager {
 		
 		accounts.put(playername, money);
 		
-//		plugin.getScoreboardManager().updateBalance(playername);
+		plugin.getScoreboardManager().updateBalance(playername);
 		
 		final double m = money;
 		
