@@ -89,7 +89,6 @@ public class ScoreboardManager {
 	
 	public void removePlayer(Player player) {
 		if(playerboards.containsKey(player.getName())) {
-			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 			playerboards.remove(player.getName());
 		}
 	}
