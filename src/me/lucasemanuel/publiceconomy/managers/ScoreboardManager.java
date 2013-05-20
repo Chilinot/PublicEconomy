@@ -90,14 +90,28 @@ public class ScoreboardManager {
 	public void removePlayer(Player player) {
 		if(playerboards.containsKey(player.getName())) {
 			playerboards.remove(player.getName());
+			
+			// In case the player did not disconnect, remove the scoreboard.
+			player.setScoreboard(plugin.getServer().getScoreboardManager().getNewScoreboard());
 		}
 	}
 
 	public void updateBalance(String playername) {
-		Scoreboard board = playerboards.get(playername);
-		Objective o = board.getObjective(DisplaySlot.SIDEBAR);
-		Score s = o.getScore(Bukkit.getOfflinePlayer("Saldo:"));
-		
-		s.setScore((int) plugin.getMoneyManager().getBalance(playername));
+		if(playerboards.containsKey(playername)) {
+			Scoreboard board = playerboards.get(playername);
+			Objective o = board.getObjective(DisplaySlot.SIDEBAR);
+			Score s = o.getScore(Bukkit.getOfflinePlayer("Saldo:"));
+			
+			s.setScore((int) plugin.getMoneyManager().getBalance(playername));
+		}
+	}
+
+	public void toggleHideBoard(Player player) {
+		if(playerboards.containsKey(player.getName())) {
+			removePlayer(player);
+		}
+		else {
+			addPlayer(player);
+		}
 	}
 }
