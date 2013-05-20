@@ -71,8 +71,6 @@ public class Commands implements CommandExecutor {
 			
 		}
 		
-		//TODO lägg till saldo-kommando
-		
 		return false;
 	}
 	

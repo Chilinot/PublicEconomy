@@ -56,6 +56,8 @@ public class ScoreboardManager {
 		
 		playerboards = new HashMap<String, Scoreboard>();
 		
+		// Schedule it to load all players directly on the next tick to allow the server to get ready.
+		// This is here in case the plugin was reloaded.
 		plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
 			public void run() {
 				for(Player player : Bukkit.getOnlinePlayers()) {
@@ -91,7 +93,7 @@ public class ScoreboardManager {
 		if(playerboards.containsKey(player.getName())) {
 			playerboards.remove(player.getName());
 			
-			// In case the player did not disconnect, remove the scoreboard.
+			// Just in case this method was called by toggleHideBoard()
 			player.setScoreboard(plugin.getServer().getScoreboardManager().getNewScoreboard());
 		}
 	}

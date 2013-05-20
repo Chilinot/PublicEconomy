@@ -30,6 +30,8 @@
 
 package me.lucasemanuel.publiceconomy.listeners;
 
+import java.util.Set;
+
 import me.lucasemanuel.publiceconomy.Main;
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
@@ -45,6 +47,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class Players implements Listener {
 	
@@ -105,9 +108,20 @@ public class Players implements Listener {
 			Chest chest = (Chest) inv.getHolder();
 			
 			if(plugin.getChestManager().isShopChest(chest.getLocation())) {
-				plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), chest.getInventory().getContents());
 				
+				Set<ItemStack> worthless = plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), chest.getInventory().getContents());
 				chest.getInventory().clear();
+				
+				if(worthless.size() > 0) {
+					
+					Player player = (Player) event.getPlayer();
+					
+					for(ItemStack i : worthless) {
+						player.getInventory().addItem(i);
+					}
+					
+					player.sendMessage("Du fick tillbaka de saker som saknade värde.");
+				}
 				
 				plugin.getChestManager().unblock(chest.getLocation());
 			}

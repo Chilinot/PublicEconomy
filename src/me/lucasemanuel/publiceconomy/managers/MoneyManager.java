@@ -66,12 +66,24 @@ public class MoneyManager {
 		plugin = instance;
 		logger = new ConsoleLogger(instance, "MoneyManager");
 		
-		String username  = instance.getConfig().getString("database.auth.username");
-		String password  = instance.getConfig().getString("database.auth.password");
-		String host      = instance.getConfig().getString("database.settings.host");
-		int    port      = instance.getConfig().getInt   ("database.settings.port");
-		String database  = instance.getConfig().getString("database.settings.database");
-		String tablename = instance.getConfig().getString("database.settings.tablename");
+		accounts    = new HashMap<String, Double>();
+		item_values = new HashMap<String, Double>();
+		
+		initiateMySQLConnector();
+		
+		loadValues();
+		loadAccounts();
+		
+		logger.debug("Initiated");
+	}
+	
+	private void initiateMySQLConnector() {
+		String username  = plugin.getConfig().getString("database.auth.username");
+		String password  = plugin.getConfig().getString("database.auth.password");
+		String host      = plugin.getConfig().getString("database.settings.host");
+		int    port      = plugin.getConfig().getInt   ("database.settings.port");
+		String database  = plugin.getConfig().getString("database.settings.database");
+		String tablename = plugin.getConfig().getString("database.settings.tablename");
 		
 		mysql = new ConcurrentMySQLConnection(username, password, host, port, database, tablename);
 		
@@ -85,14 +97,6 @@ public class MoneyManager {
 		catch (ClassNotFoundException | SQLException e) {
 			logger.severe("Could not connect to the MySQL-server! Message: " + e.getMessage());
 		}
-		
-		accounts    = new HashMap<String, Double>();
-		item_values = new HashMap<String, Double>();
-		
-		loadValues();
-		loadAccounts();
-		
-		logger.debug("Initiated");
 	}
 	
 	private void loadAccounts() {
@@ -150,13 +154,27 @@ public class MoneyManager {
 		}
 	}
 
-	public void giveMoneyForItems(final String playername, ItemStack[] contents) {
+	public Set<ItemStack> giveMoneyForItems(final String playername, ItemStack[] contents) {
+		
+		// TODO ge tillbaka saker som inte har något värde
+		
+		Set<ItemStack> worthless = new HashSet<ItemStack>();
 		
 		double money = 0.0d;
 		
 		for(ItemStack i : contents) {
-			if(i == null) continue;
-			money += getValue(i);
+			
+			// For some reason, inventory.getContents() returns the empty slots as well.
+			if(i == null) 
+				continue;
+			
+			double value = getValue(i);
+			
+			if(value == 0.0d) {
+				worthless.add(i);
+			}
+			
+			money += value;
 		}
 		
 		logger.debug("Adding money=" + money + " to player=" + playername);
@@ -177,11 +195,13 @@ public class MoneyManager {
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			public void run() {
 				plugin.getDataStorage().updateBalance(playername, m);
-				mysql.update(playername, m);
+				mysql.updateBalance(playername, m);
 			}
 		});
 		
 		logger.debug("Current balance=" + accounts.get(playername));
+		
+		return worthless;
 	}
 	
 	public double getValue(ItemStack i) {

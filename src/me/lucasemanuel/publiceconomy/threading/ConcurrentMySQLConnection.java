@@ -45,7 +45,6 @@ public class ConcurrentMySQLConnection {
 	private final String tablename;
 
 	public ConcurrentMySQLConnection(String username, String password, String host, int port, String database, String tablename) {
-		
 		this.username   = username;
 		this.password   = password;
 		this.host       = host;
@@ -54,7 +53,7 @@ public class ConcurrentMySQLConnection {
 		this.tablename  = tablename;
 	}
 	
-	public synchronized void update(String playername, double balance) {
+	public synchronized void updateBalance(String playername, double balance) {
 		try {
 			
 			Class.forName("com.mysql.jdbc.Driver");
