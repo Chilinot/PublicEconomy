@@ -46,7 +46,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -103,10 +102,10 @@ public class Players implements Listener {
 	
 	@EventHandler(ignoreCancelled=true)
 	public void onInventoryClose(InventoryCloseEvent event) {
-		Inventory inv = event.getInventory();
+		InventoryHolder holder = event.getInventory().getHolder();
 		
-		if(inv.getHolder() instanceof Chest) {
-			Chest chest = (Chest) inv.getHolder();
+		if(holder instanceof Chest) {
+			Chest chest = (Chest) holder;
 			
 			if(plugin.getChestManager().isShopChest(chest.getLocation())) {
 				
