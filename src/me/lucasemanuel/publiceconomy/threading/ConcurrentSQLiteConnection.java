@@ -143,7 +143,7 @@ public class ConcurrentSQLiteConnection {
 		}
 	}
 
-	public HashMap<String, Double> retrieveAccounts() {
+	public synchronized HashMap<String, Double> retrieveAccounts() {
 		testConnection();
 		
 		try {
