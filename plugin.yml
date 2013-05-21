@@ -3,17 +3,11 @@ version: 0.1
 main: me.lucasemanuel.publiceconomy.Main
 
 commands:
-  test:
-    description: Testcommand
-    usage: /<command>
-    permission: publiceconomy.commands.test
   saldo:
     description: Toggles the saldobox on and off.
     usage: /<command>
     permission: publiceconomy.commands.saldo
 
 permissions:
-  publiceconomy.commands.test:
-    default: op
   publiceconomy.commands.saldo:
     default: true

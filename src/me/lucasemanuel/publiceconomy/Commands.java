@@ -64,11 +64,7 @@ public class Commands implements CommandExecutor {
 		String command = cmd.getName();
 		
 		switch(command) {
-			
-			case "test": return test(sender, args);
-			
 			case "saldo": return saldo(sender, args);
-			
 		}
 		
 		return false;
@@ -84,66 +80,6 @@ public class Commands implements CommandExecutor {
 		Player player = (Player) sender;
 		
 		plugin.getScoreboardManager().toggleHideBoard(player);
-		
-		return true;
-	}
-
-	private boolean test(CommandSender sender, String[] args) {
-		
-		ArrayList<String> lines = new ArrayList<String>();
-		
-		try {
-			FileReader fr = new FileReader("E:/priser.txt");
-			
-			BufferedReader inFil = new BufferedReader(fr);                   
-
-			String rad = inFil.readLine();
-			while(rad != null) {
-				lines.add(rad);
-				rad = inFil.readLine();
-			}              
-			
-			// Stäng filen 
-			inFil.close();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "item_values.yml"));
-		
-		
-		for(String line : lines) {
-			
-			String[] parts = line.split(" ");
-			
-			int id = Integer.parseInt(parts[0].split(":")[0]);
-			
-			String[] prices = parts[parts.length - 1].split(":");
-			
-			int price = 0;
-			
-			if(prices.length == 1 && !prices[0].equals("N/A"))
-				price = Integer.parseInt(prices[0]);
-			else if(prices.length == 1 && prices[0].equals("N/A"))
-				price = 0;
-			else if(prices.length == 2)
-				price = Integer.parseInt(prices[1].replace("#", ""));
-			
-			
-			String name = Material.getMaterial(id).name();
-			
-			double p = (double) price;
-			
-			config.set("items." + name, p);
-		}
-		
-		try {
-			config.save(plugin.getDataFolder() + File.separator + "item_values.yml");
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 		return true;
 	}

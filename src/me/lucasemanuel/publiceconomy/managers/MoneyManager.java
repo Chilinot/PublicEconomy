@@ -156,8 +156,6 @@ public class MoneyManager {
 
 	public Set<ItemStack> giveMoneyForItems(final String playername, ItemStack[] contents) {
 		
-		// TODO ge tillbaka saker som inte har något värde
-		
 		Set<ItemStack> worthless = new HashSet<ItemStack>();
 		
 		double money = 0.0d;
