@@ -72,6 +72,8 @@ public class Commands implements CommandExecutor {
 		
 		plugin.getScoreboardManager().toggleHideBoard(player);
 		
+		player.sendMessage("Använd kommandot igen för att visa rutan.");
+		
 		return true;
 	}
 }
