@@ -100,6 +100,7 @@ public class Players implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(ignoreCancelled=true)
 	public void onInventoryClose(InventoryCloseEvent event) {
 		InventoryHolder holder = event.getInventory().getHolder();
@@ -119,6 +120,8 @@ public class Players implements Listener {
 					for(ItemStack i : worthless) {
 						player.getInventory().addItem(i);
 					}
+					
+					player.updateInventory();
 					
 					player.sendMessage("Du fick tillbaka de saker som saknade värde.");
 				}

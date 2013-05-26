@@ -175,29 +175,30 @@ public class MoneyManager {
 			money += value;
 		}
 		
-		logger.debug("Adding money=" + money + " to player=" + playername);
-		
-		if(money != 0.0)
+		if(money != 0.0) {
+			logger.debug("Adding money=" + money + " to player=" + playername);
+			
 			Bukkit.getPlayerExact(playername).sendMessage("Du tjänade " + ChatColor.GOLD + money + ChatColor.WHITE + " kr.");
-		
-		if(accounts.containsKey(playername)) {
-			money += accounts.get(playername);
-		}
-		
-		accounts.put(playername, money);
-		
-		plugin.getScoreboardManager().updateBalance(playername);
-		
-		final double m = money;
-		
-		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			public void run() {
-				plugin.getDataStorage().updateBalance(playername, m);
-				mysql.updateBalance(playername, m);
+			
+			if(accounts.containsKey(playername)) {
+				money += accounts.get(playername);
 			}
-		});
-		
-		logger.debug("Current balance=" + accounts.get(playername));
+			
+			accounts.put(playername, money);
+			
+			plugin.getScoreboardManager().updateBalance(playername);
+			
+			final double m = money;
+			
+			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+				public void run() {
+					plugin.getDataStorage().updateBalance(playername, m);
+					mysql.updateBalance(playername, m);
+				}
+			});
+			
+			logger.debug("Current balance=" + accounts.get(playername));
+		}
 		
 		return worthless;
 	}
@@ -216,9 +217,9 @@ public class MoneyManager {
 		if(max != 0.0) {
 			double dura = i.getDurability();
 			
-			double calc = (double) Math.round(((max - dura) / max) * 100) / 100;
+			double calc = (max - dura) / max;
 			
-			value *= calc;
+			value = (double) Math.round(value * calc * 100) / 100;
 			
 			logger.debug("durability=" + dura + " max=" + max + " calculated=" + calc);
 		}
