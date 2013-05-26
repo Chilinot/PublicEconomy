@@ -133,7 +133,7 @@ public class MoneyManager {
 		
 		for(Material m : d_items) {
 			if(!config.contains("items." + m.name())) {
-				config.set("items." + m.name(), 10.0);
+				config.set("items." + m.name(), 0.0);
 				save = true;
 			}
 		}
