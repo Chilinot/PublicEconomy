@@ -214,15 +214,8 @@ public class MoneyManager {
 		
 		double max = i.getType().getMaxDurability();
 		
-		if(max != 0.0) {
-			double dura = i.getDurability();
-			
-			double calc = (max - dura) / max;
-			
-			value = (double) Math.round(value * calc * 100) / 100;
-			
-			logger.debug("durability=" + dura + " max=" + max + " calculated=" + calc);
-		}
+		if(max != 0.0d)
+			value = (double) Math.round(value * ((max - i.getDurability()) / max) * 100) / 100;
 		
 		logger.debug("value=" + value);
 		
