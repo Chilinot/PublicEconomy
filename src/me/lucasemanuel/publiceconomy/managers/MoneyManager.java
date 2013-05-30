@@ -33,10 +33,13 @@ package me.lucasemanuel.publiceconomy.managers;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -47,6 +50,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.lucasemanuel.publiceconomy.Main;
 import me.lucasemanuel.publiceconomy.threading.ConcurrentMySQLConnection;
@@ -166,7 +170,7 @@ public class MoneyManager {
 			if(i == null) 
 				continue;
 			
-			double value = getValue(i);
+			double value = getValue(i, false);
 			
 			if(value == 0.0d) {
 				worthless.add(i);
@@ -203,10 +207,14 @@ public class MoneyManager {
 		return worthless;
 	}
 	
-	public double getValue(ItemStack i) {
+	public double getValue(ItemStack i, boolean single) {
 		double value = 0.0d;
 		
-		value += item_values.get("items." + i.getType().name()) * i.getAmount();
+		double v = item_values.get("items." + i.getType().name());
+		if(!single)
+			v *= i.getAmount();
+		
+		value += v;
 		
 		for(Entry<Enchantment, Integer> entry : i.getEnchantments().entrySet()) {
 			value += item_values.get("enchantments." + entry.getKey().getName()) * entry.getValue();
@@ -227,5 +235,32 @@ public class MoneyManager {
 			return accounts.get(playername);
 		else
 			return 0.0d;
+	}
+	
+	@SuppressWarnings("serial")
+	public void fixLore(final ItemStack is) {
+		ItemMeta im = is.getItemMeta();
+		
+		if(!im.hasLore()) {
+			im.setLore(new ArrayList<String>() {{
+				add("Värde: " + plugin.getMoneyManager().getValue(is, true) + " kr.");
+			}});
+			
+			is.setItemMeta(im);
+		}
+		else if(is.getType().getMaxDurability() != 0.0d) {
+			List<String> lore = im.getLore();
+			
+			Iterator<String> l = lore.iterator();
+			while(l.hasNext()) {
+				if(l.next().startsWith("Värde: "))
+					l.remove();
+			}
+			
+			lore.add("Värde: " + plugin.getMoneyManager().getValue(is, true) + " kr.");
+			im.setLore(lore);
+			
+			is.setItemMeta(im);
+		}
 	}
 }

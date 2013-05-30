@@ -41,6 +41,8 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -129,5 +131,21 @@ public class Players implements Listener {
 				plugin.getChestManager().unblock(chest.getLocation());
 			}
 		}
+	}
+	
+	@EventHandler(ignoreCancelled=true)
+	public void onItemSpawn(ItemSpawnEvent event) {
+		plugin.getMoneyManager().fixLore(event.getEntity().getItemStack());
+	}
+	
+	@EventHandler(ignoreCancelled=true)
+	public void onInventoryClick(InventoryClickEvent event) {
+		ItemStack is1 = event.getCurrentItem();
+		ItemStack is2 = event.getCursor();
+		
+		if(is1 != null && is1.getType() != Material.AIR)
+			plugin.getMoneyManager().fixLore(is1);
+		if(is2 != null && is2.getType() != Material.AIR)
+			plugin.getMoneyManager().fixLore(is2);
 	}
 }
