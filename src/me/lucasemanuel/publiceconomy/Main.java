@@ -30,6 +30,7 @@
 
 package me.lucasemanuel.publiceconomy;
 
+import me.lucasemanuel.publiceconomy.listeners.Blocks;
 import me.lucasemanuel.publiceconomy.listeners.Players;
 import me.lucasemanuel.publiceconomy.managers.ChestManager;
 import me.lucasemanuel.publiceconomy.managers.MoneyManager;
@@ -67,6 +68,7 @@ public class Main extends JavaPlugin {
 		logger.debug("Registering eventlisteners...");
 		
 		getServer().getPluginManager().registerEvents(new Players(this), this);
+		getServer().getPluginManager().registerEvents(new Blocks(this), this);
 		
 		
 		logger.debug("Registering commands...");

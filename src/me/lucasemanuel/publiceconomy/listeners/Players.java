@@ -38,13 +38,10 @@ import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -146,11 +143,6 @@ public class Players implements Listener {
 	}
 	
 	@EventHandler(ignoreCancelled=true)
-	public void onItemSpawn(ItemSpawnEvent event) {
-		plugin.getMoneyManager().fixLore(event.getEntity().getItemStack());
-	}
-	
-	@EventHandler(ignoreCancelled=true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		ItemStack is1 = event.getCurrentItem();
 		ItemStack is2 = event.getCursor();
@@ -159,17 +151,5 @@ public class Players implements Listener {
 			plugin.getMoneyManager().fixLore(is1);
 		if(is2 != null && is2.getType() != Material.AIR)
 			plugin.getMoneyManager().fixLore(is2);
-	}
-	
-	@EventHandler(ignoreCancelled=true)
-	public void onBlockBreak(BlockBreakEvent event) {
-		Block b = event.getBlock();
-		if(b.getType().equals(Material.CHEST) 
-				&& plugin.getChestManager().isShopChest(b.getLocation())
-				&& !event.getPlayer().hasPermission("publiceconomy.chest.break")) {
-			
-			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "Du får inte ha sönder denna kista!");
-		}
 	}
 }
