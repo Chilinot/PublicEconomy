@@ -32,6 +32,7 @@ package me.lucasemanuel.publiceconomy;
 
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -56,11 +57,28 @@ public class Commands implements CommandExecutor {
 		
 		switch(command) {
 			case "saldo": return saldo(sender, args);
+			case "test": return test(sender, args);
 		}
 		
 		return false;
 	}
 	
+	private boolean test(CommandSender sender, String[] args) {
+		
+		if(!(sender instanceof Player)) {
+			sender.sendMessage("This command can only be used by players!");
+			return true;
+		}
+		
+		Player player = (Player) sender;
+		
+		player.getWorld().playSound(player.getLocation(), Sound.EXPLODE, 1, 2.5f);
+		
+		
+		
+		return true;
+	}
+
 	private boolean saldo(CommandSender sender, String[] args) {
 		
 		if(!(sender instanceof Player)) {

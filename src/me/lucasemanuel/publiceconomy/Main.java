@@ -74,6 +74,7 @@ public class Main extends JavaPlugin {
 		Commands commands = new Commands(this);
 		
 		getCommand("saldo").setExecutor(commands);
+		getCommand("test").setExecutor(commands);
 		
 	}
 

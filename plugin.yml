@@ -7,7 +7,13 @@ commands:
     description: Toggles the saldobox on and off.
     usage: /<command>
     permission: publiceconomy.commands.saldo
+  test:
+    description: Test
+    usage: /<command>
+    permission: publiceconomy.commands.test
 
 permissions:
   publiceconomy.commands.saldo:
     default: true
+  publiceconomy.commands.test:
+    default: op
