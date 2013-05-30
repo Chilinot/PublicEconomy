@@ -139,7 +139,7 @@ public class ConsoleLogger {
 		
 		while(i.hasNext()) {
 			
-			Player player = plugin.getServer().getPlayer(i.next());
+			Player player = plugin.getServer().getPlayerExact(i.next());
 			
 			if(player != null) {
 				player.sendMessage(label + " [" + this.name + "] - " + ChatColor.WHITE + msg);
