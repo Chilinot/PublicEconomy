@@ -17,3 +17,7 @@ permissions:
     default: true
   publiceconomy.commands.test:
     default: op
+  publiceconomy.chest.break:
+    default: op
+  publiceconomy.chest.register:
+    default: op

@@ -36,11 +36,15 @@ import me.lucasemanuel.publiceconomy.Main;
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -48,6 +52,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -77,7 +82,11 @@ public class Players implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		
-		if(player.isOp() && player.getItemInHand().getType().equals(Material.BLAZE_ROD)) {
+		if(event.getClickedBlock().getType().equals(Material.CHEST)
+				&& player.hasPermission("publiceconomy.chest.register") 
+				&& player.getItemInHand().getType().equals(Material.BLAZE_ROD)
+				&& !plugin.getChestManager().isShopChest(event.getClickedBlock().getLocation())) {
+			
 			event.getPlayer().sendMessage(ChatColor.GREEN + "Kistan registreras!");
 			plugin.getChestManager().registerChest(event.getClickedBlock().getLocation());
 		}
@@ -87,17 +96,19 @@ public class Players implements Listener {
 	public void onInventoryOpen(InventoryOpenEvent event) {
 		InventoryHolder holder = event.getInventory().getHolder();
 		
-		if(holder instanceof Chest) {
-			Chest chest = (Chest) holder;
-			
-			if(plugin.getChestManager().isShopChest(chest.getLocation())) {
-				if(!plugin.getChestManager().isBlocked(chest.getLocation())) {
-					plugin.getChestManager().block(chest.getLocation());
-				}
-				else {
-					((Player) event.getPlayer()).sendMessage(ChatColor.RED + "Kistan används redan!");
-					event.setCancelled(true);
-				}
+		Location loc = null;
+		
+		if(holder instanceof Chest) loc = ((Chest)holder).getLocation();
+		else if(holder instanceof DoubleChest) loc = ((DoubleChest)holder).getLocation();
+		else return;
+		
+		if(plugin.getChestManager().isShopChest(loc)) {
+			if(!plugin.getChestManager().isBlocked(loc)) {
+				plugin.getChestManager().block(loc);
+			}
+			else {
+				((Player) event.getPlayer()).sendMessage(ChatColor.RED + "Kistan används redan!");
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -105,31 +116,35 @@ public class Players implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(ignoreCancelled=true)
 	public void onInventoryClose(InventoryCloseEvent event) {
-		InventoryHolder holder = event.getInventory().getHolder();
 		
-		if(holder instanceof Chest) {
-			Chest chest = (Chest) holder;
+		InventoryHolder holder = event.getInventory().getHolder();
+		Location loc = null;
+		
+		if(holder instanceof Chest) loc = ((Chest)holder).getLocation();
+		else if(holder instanceof DoubleChest) loc = ((DoubleChest)holder).getLocation();
+		else return;
+		
+		Inventory inv = holder.getInventory();
+		
+		if(plugin.getChestManager().isShopChest(loc)) {
 			
-			if(plugin.getChestManager().isShopChest(chest.getLocation())) {
+			Set<ItemStack> worthless = plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), inv.getContents());
+			inv.clear();
+			
+			if(worthless.size() > 0) {
 				
-				Set<ItemStack> worthless = plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), chest.getInventory().getContents());
-				chest.getInventory().clear();
+				Player player = (Player) event.getPlayer();
 				
-				if(worthless.size() > 0) {
-					
-					Player player = (Player) event.getPlayer();
-					
-					for(ItemStack i : worthless) {
-						player.getInventory().addItem(i);
-					}
-					
-					player.updateInventory();
-					
-					player.sendMessage("Du fick tillbaka de saker som saknade värde.");
+				for(ItemStack i : worthless) {
+					player.getInventory().addItem(i);
 				}
 				
-				plugin.getChestManager().unblock(chest.getLocation());
+				player.updateInventory();
+				
+				player.sendMessage("Du fick tillbaka de saker som saknade värde.");
 			}
+			
+			plugin.getChestManager().unblock(loc);
 		}
 	}
 	
@@ -147,5 +162,17 @@ public class Players implements Listener {
 			plugin.getMoneyManager().fixLore(is1);
 		if(is2 != null && is2.getType() != Material.AIR)
 			plugin.getMoneyManager().fixLore(is2);
+	}
+	
+	@EventHandler(ignoreCancelled=true)
+	public void onBlockBreak(BlockBreakEvent event) {
+		Block b = event.getBlock();
+		if(b.getType().equals(Material.CHEST) 
+				&& plugin.getChestManager().isShopChest(b.getLocation())
+				&& !event.getPlayer().hasPermission("publiceconomy.chest.break")) {
+			
+			event.setCancelled(true);
+			event.getPlayer().sendMessage(ChatColor.RED + "Du får inte ha sönder denna kista!");
+		}
 	}
 }

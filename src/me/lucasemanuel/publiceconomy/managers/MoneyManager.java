@@ -166,7 +166,6 @@ public class MoneyManager {
 		
 		for(ItemStack i : contents) {
 			
-			// For some reason, inventory.getContents() returns the empty slots as well.
 			if(i == null) 
 				continue;
 			

@@ -167,8 +167,3 @@ public class ConcurrentSQLiteConnection {
 		}
 	}
 }
-
-
-
-
-
