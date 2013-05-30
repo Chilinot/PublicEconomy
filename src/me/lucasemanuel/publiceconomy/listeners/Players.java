@@ -40,7 +40,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,21 +93,19 @@ public class Players implements Listener {
 	
 	@EventHandler(ignoreCancelled=true)
 	public void onInventoryOpen(InventoryOpenEvent event) {
+		
 		InventoryHolder holder = event.getInventory().getHolder();
-		
-		Location loc = null;
-		
-		if(holder instanceof Chest) loc = ((Chest)holder).getLocation();
-		else if(holder instanceof DoubleChest) loc = ((DoubleChest)holder).getLocation();
-		else return;
-		
-		if(plugin.getChestManager().isShopChest(loc)) {
-			if(!plugin.getChestManager().isBlocked(loc)) {
-				plugin.getChestManager().block(loc);
-			}
-			else {
-				((Player) event.getPlayer()).sendMessage(ChatColor.RED + "Kistan används redan!");
-				event.setCancelled(true);
+		if(holder instanceof Chest) {
+			Chest chest = (Chest) holder;
+			
+			if(plugin.getChestManager().isShopChest(chest.getLocation())) {
+				if(!plugin.getChestManager().isBlocked(chest.getLocation())) {
+					plugin.getChestManager().block(chest.getLocation());
+				}
+				else {
+					((Player) event.getPlayer()).sendMessage(ChatColor.RED + "Kistan används redan!");
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -118,33 +115,33 @@ public class Players implements Listener {
 	public void onInventoryClose(InventoryCloseEvent event) {
 		
 		InventoryHolder holder = event.getInventory().getHolder();
-		Location loc = null;
 		
-		if(holder instanceof Chest) loc = ((Chest)holder).getLocation();
-		else if(holder instanceof DoubleChest) loc = ((DoubleChest)holder).getLocation();
-		else return;
-		
-		Inventory inv = holder.getInventory();
-		
-		if(plugin.getChestManager().isShopChest(loc)) {
+		if(holder instanceof Chest) {
 			
-			Set<ItemStack> worthless = plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), inv.getContents());
-			inv.clear();
+			Chest chest = (Chest) holder;
 			
-			if(worthless.size() > 0) {
+			Location  loc = chest.getLocation();
+			Inventory inv = chest.getInventory();
+			
+			if(plugin.getChestManager().isShopChest(loc)) {
 				
-				Player player = (Player) event.getPlayer();
+				Set<ItemStack> worthless = plugin.getMoneyManager().giveMoneyForItems(((Player)event.getPlayer()).getName(), inv.getContents());
+				inv.clear();
 				
-				for(ItemStack i : worthless) {
-					player.getInventory().addItem(i);
+				if(worthless.size() > 0) {
+					
+					Player player = (Player) event.getPlayer();
+					
+					for(ItemStack i : worthless) {
+						player.getInventory().addItem(i);
+					}
+					
+					player.updateInventory();
+					player.sendMessage("Du fick tillbaka de saker som saknade värde.");
 				}
 				
-				player.updateInventory();
-				
-				player.sendMessage("Du fick tillbaka de saker som saknade värde.");
+				plugin.getChestManager().unblock(loc);
 			}
-			
-			plugin.getChestManager().unblock(loc);
 		}
 	}
 	
