@@ -41,7 +41,7 @@ import org.fusesource.jansi.Ansi;
 public class ConsoleLogger {
 
 	private static JavaPlugin plugin;
-	private Logger logger;
+	private static Logger logger;
 
 	private static String template;
 	private static boolean debug;
@@ -59,7 +59,8 @@ public class ConsoleLogger {
 	 */
 	public ConsoleLogger(JavaPlugin instance, String logger_name) {
 		plugin = instance;
-		this.logger = instance.getLogger();
+		logger = instance.getLogger();
+		
 		this.name = logger_name;
 
 		ConsoleLogger.debug    = plugin.getConfig().getBoolean("debug");
@@ -74,7 +75,7 @@ public class ConsoleLogger {
 	 * @param msg - Info message
 	 */
 	public void info(String msg) {
-		this.logger.info(Ansi.ansi().fg(Ansi.Color.GREEN) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
+		logger.info(Ansi.ansi().fg(Ansi.Color.GREEN) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
 		
 		broadcastToListeners("info", msg);
 	}
@@ -85,7 +86,7 @@ public class ConsoleLogger {
 	 * @param msg - Warning message
 	 */
 	public void warning(String msg) {
-		this.logger.warning(Ansi.ansi().fg(Ansi.Color.YELLOW) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
+		logger.warning(Ansi.ansi().fg(Ansi.Color.YELLOW) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
 		
 		broadcastToListeners("warning", msg);
 	}
@@ -96,7 +97,7 @@ public class ConsoleLogger {
 	 * @param msg - Severe message
 	 */
 	public void severe(String msg) {
-		this.logger.severe(Ansi.ansi().fg(Ansi.Color.RED) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
+		logger.severe(Ansi.ansi().fg(Ansi.Color.RED) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
 		
 		broadcastToListeners("severe", msg);
 	}
@@ -109,7 +110,7 @@ public class ConsoleLogger {
 	 */
 	public void debug(String msg) {
 		if (debug == true)
-			this.logger.info(Ansi.ansi().fg(Ansi.Color.CYAN) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
+			logger.info(Ansi.ansi().fg(Ansi.Color.CYAN) + this.info + msg + Ansi.ansi().fg(Ansi.Color.WHITE));
 		
 		broadcastToListeners("debug", msg);
 	}
