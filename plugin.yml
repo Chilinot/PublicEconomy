@@ -7,6 +7,10 @@ commands:
     description: Toggles the saldobox on and off.
     usage: /<command>
     permission: publiceconomy.commands.saldo
+  pedebug:
+    description: Allows an ingame player to listen to this plugins logger.
+    usage: /<command> <listen/unlisten/enabled/disabled>
+    permission: publiceconomy.commands.pedebug
   test:
     description: Test
     usage: /<command>
@@ -15,6 +19,8 @@ commands:
 permissions:
   publiceconomy.commands.saldo:
     default: true
+  publiceconomy.commands.pedebug:
+    default: op
   publiceconomy.commands.test:
     default: op
   publiceconomy.chest.break:

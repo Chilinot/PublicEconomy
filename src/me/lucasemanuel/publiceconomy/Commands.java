@@ -32,11 +32,14 @@ package me.lucasemanuel.publiceconomy;
 
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
-import org.bukkit.Sound;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class Commands implements CommandExecutor {
 	
@@ -58,11 +61,47 @@ public class Commands implements CommandExecutor {
 		switch(command) {
 			case "saldo": return saldo(sender, args);
 			case "test": return test(sender, args);
+			case "pedebug": return pedebug(sender, args);
 		}
 		
 		return false;
 	}
 	
+	private boolean pedebug(CommandSender sender, String[] args) {
+		
+		if(!(sender instanceof Player)) {
+			sender.sendMessage("This command can only be used by players!");
+			return true;
+		}
+		
+		if(args.length != 1) {
+			return false;
+		}
+		
+		String value = args[0].toLowerCase();
+		
+		switch(value) {
+			case "listen": 
+				ConsoleLogger.addListener(((Player)sender).getName());
+				sender.sendMessage(ChatColor.GOLD + "You are now recieving logger info.");
+				break;
+			case "unlisten":
+				ConsoleLogger.removeListener(((Player)sender).getName());
+				sender.sendMessage(ChatColor.GOLD + "You are no longer recieving logger info.");
+				break;
+			case "enabled":
+				ConsoleLogger.setDebug(true);
+				sender.sendMessage(ChatColor.GOLD + "Enabled debug.");
+				break;
+			case "disabled":
+				ConsoleLogger.setDebug(false);
+				sender.sendMessage(ChatColor.GOLD + "Disabled debug.");
+				break;
+		}
+		
+		return true;
+	}
+
 	private boolean test(CommandSender sender, String[] args) {
 		
 		if(!(sender instanceof Player)) {
@@ -72,9 +111,10 @@ public class Commands implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		player.getWorld().playSound(player.getLocation(), Sound.EXPLODE, 1, 2.5f);
+		ItemStack drop = (player.getItemInHand().getType() == Material.AIR) ? new ItemStack(Material.APPLE, 1) : player.getItemInHand().clone();
+		Item item = player.getWorld().dropItem(player.getLocation(), drop);
 		
-		
+		item.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(2));
 		
 		return true;
 	}
