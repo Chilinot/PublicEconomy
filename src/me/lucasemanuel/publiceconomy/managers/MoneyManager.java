@@ -247,7 +247,7 @@ public class MoneyManager {
 			
 			is.setItemMeta(im);
 		}
-		else if(is.getType().getMaxDurability() != 0.0d) {
+		else {
 			List<String> lore = im.getLore();
 			
 			Iterator<String> l = lore.iterator();
