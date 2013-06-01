@@ -40,6 +40,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class Commands implements CommandExecutor {
 	
@@ -69,16 +70,27 @@ public class Commands implements CommandExecutor {
 	
 	private boolean pedebug(CommandSender sender, String[] args) {
 		
-		if(!(sender instanceof Player)) {
-			sender.sendMessage("This command can only be used by players!");
-			return true;
-		}
-		
 		if(args.length != 1) {
 			return false;
 		}
 		
 		String value = args[0].toLowerCase();
+		
+		switch(value) {
+			case "enabled":
+				ConsoleLogger.setDebug(true);
+				sender.sendMessage(ChatColor.GOLD + "Enabled debug.");
+				return true;
+			case "disabled":
+				ConsoleLogger.setDebug(false);
+				sender.sendMessage(ChatColor.GOLD + "Disabled debug.");
+				return true;
+		}
+		
+		if(!(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+			return true;
+		}
 		
 		switch(value) {
 			case "listen": 
@@ -88,14 +100,6 @@ public class Commands implements CommandExecutor {
 			case "unlisten":
 				ConsoleLogger.removeListener(((Player)sender).getName());
 				sender.sendMessage(ChatColor.GOLD + "You are no longer recieving logger info.");
-				break;
-			case "enabled":
-				ConsoleLogger.setDebug(true);
-				sender.sendMessage(ChatColor.GOLD + "Enabled debug.");
-				break;
-			case "disabled":
-				ConsoleLogger.setDebug(false);
-				sender.sendMessage(ChatColor.GOLD + "Disabled debug.");
 				break;
 		}
 		
@@ -111,10 +115,9 @@ public class Commands implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		ItemStack drop = (player.getItemInHand().getType() == Material.AIR) ? new ItemStack(Material.APPLE, 1) : player.getItemInHand().clone();
-		Item item = player.getWorld().dropItem(player.getLocation(), drop);
+		Item item = player.getWorld().dropItem(player.getLocation().add(6,0.2,0), new ItemStack(Material.APPLE, 1));
 		
-		item.setVelocity(player.getEyeLocation().getDirection().normalize().multiply(2));
+		item.setVelocity(new Vector(0,0,0));
 		
 		return true;
 	}
