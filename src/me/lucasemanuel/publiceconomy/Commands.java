@@ -33,14 +33,10 @@ package me.lucasemanuel.publiceconomy;
 import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 public class Commands implements CommandExecutor {
 	
@@ -61,7 +57,6 @@ public class Commands implements CommandExecutor {
 		
 		switch(command) {
 			case "saldo": return saldo(sender, args);
-			case "test": return test(sender, args);
 			case "pedebug": return pedebug(sender, args);
 		}
 		
@@ -102,22 +97,6 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(ChatColor.GOLD + "You are no longer recieving logger info.");
 				break;
 		}
-		
-		return true;
-	}
-
-	private boolean test(CommandSender sender, String[] args) {
-		
-		if(!(sender instanceof Player)) {
-			sender.sendMessage("This command can only be used by players!");
-			return true;
-		}
-		
-		Player player = (Player) sender;
-		
-		Item item = player.getWorld().dropItem(player.getLocation().add(6,0.2,0), new ItemStack(Material.APPLE, 1));
-		
-		item.setVelocity(new Vector(0,0,0));
 		
 		return true;
 	}

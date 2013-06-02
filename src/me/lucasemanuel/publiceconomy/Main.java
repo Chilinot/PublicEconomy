@@ -77,7 +77,6 @@ public class Main extends JavaPlugin {
 		
 		getCommand("saldo").setExecutor(commands);
 		getCommand("pedebug").setExecutor(commands);
-		getCommand("test").setExecutor(commands);
 		
 		
 		logger.debug("Startup finished!");
