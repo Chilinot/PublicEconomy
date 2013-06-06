@@ -1,0 +1,24 @@
+name: ${project.name}
+author: LucasEmanuel
+version: ${project.version}
+main: ${project.groupId}.${project.artifactId}.Main
+
+commands:
+  saldo:
+    description: Toggles the saldobox on and off.
+    usage: /<command>
+    permission: publiceconomy.commands.saldo
+  pedebug:
+    description: Allows an ingame player to listen to this plugins logger.
+    usage: /<command> <listen/unlisten/enabled/disabled>
+    permission: publiceconomy.commands.pedebug
+
+permissions:
+  publiceconomy.commands.saldo:
+    default: true
+  publiceconomy.commands.pedebug:
+    default: op
+  publiceconomy.chest.break:
+    default: op
+  publiceconomy.chest.register:
+    default: op
