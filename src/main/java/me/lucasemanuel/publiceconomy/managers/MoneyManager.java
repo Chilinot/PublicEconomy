@@ -120,6 +120,8 @@ public class MoneyManager {
 		
 		checkDefaults(config);
 		
+		// No need to store the values in a HashMap, can directly call them from config!
+		//TODO fix!
 		for(String item_name : config.getKeys(true)) {
 			item_values.put(item_name, config.getDouble(item_name));
 		}
