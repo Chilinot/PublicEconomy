@@ -39,7 +39,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import me.lucasemanuel.publiceconomy.Main;
-import me.lucasemanuel.publiceconomy.utils.SerializedLocation;
+
+import se.lucasarnstrom.lucasutils.SerializedLocation;
 
 public class ConcurrentSQLiteConnection {
 	

@@ -36,8 +36,9 @@ import java.util.HashSet;
 import org.bukkit.Location;
 
 import me.lucasemanuel.publiceconomy.Main;
-import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
-import me.lucasemanuel.publiceconomy.utils.SerializedLocation;
+
+import se.lucasarnstrom.lucasutils.ConsoleLogger;
+import se.lucasarnstrom.lucasutils.SerializedLocation;;
 
 public class ChestManager {
 	
@@ -48,7 +49,7 @@ public class ChestManager {
 	
 	public ChestManager(Main instance) {
 		plugin = instance;
-		logger = new ConsoleLogger(instance, "ChestManager");
+		logger = new ConsoleLogger("ChestManager");
 		
 		shopchests = new HashMap<Location, Boolean>();
 		

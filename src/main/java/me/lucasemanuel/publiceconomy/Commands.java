@@ -30,13 +30,13 @@
 
 package me.lucasemanuel.publiceconomy;
 
-import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import se.lucasarnstrom.lucasutils.ConsoleLogger;
 
 public class Commands implements CommandExecutor {
 	
@@ -45,7 +45,7 @@ public class Commands implements CommandExecutor {
 	
 	public Commands(Main instance) {
 		plugin = instance;
-		logger = new ConsoleLogger(instance, "CommandExecutor");
+		logger = new ConsoleLogger("CommandExecutor");
 		
 		logger.debug("Initiated");
 	}

@@ -33,7 +33,8 @@ package me.lucasemanuel.publiceconomy.listeners;
 import java.util.Set;
 
 import me.lucasemanuel.publiceconomy.Main;
-import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
+
+import se.lucasarnstrom.lucasutils.ConsoleLogger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -59,7 +60,7 @@ public class Players implements Listener {
 	
 	public Players(Main instance) {
 		plugin = instance;
-		logger = new ConsoleLogger(instance, "PlayerListener");
+		logger = new ConsoleLogger("PlayerListener");
 		
 		logger.debug("Initiated");
 	}

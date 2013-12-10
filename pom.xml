@@ -29,6 +29,11 @@
 		  <version>LATEST</version>
 		  <scope>provided</scope>
 	   </dependency>
+	   <dependency>
+	   	<groupId>se.lucasarnstrom</groupId>
+	   	<artifactId>lucasutils</artifactId>
+	   	<version>5.1</version>
+	   </dependency>
   </dependencies>
   
   <build>

@@ -31,7 +31,8 @@
 package me.lucasemanuel.publiceconomy.listeners;
 
 import me.lucasemanuel.publiceconomy.Main;
-import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
+
+import se.lucasarnstrom.lucasutils.ConsoleLogger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -48,7 +49,7 @@ public class Blocks implements Listener {
 	
 	public Blocks(Main instance) {
 		plugin = instance;
-		logger = new ConsoleLogger(instance, "BlockListener");
+		logger = new ConsoleLogger("BlockListener");
 		
 		logger.debug("Initiated");
 	}

@@ -54,7 +54,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.lucasemanuel.publiceconomy.Main;
 import me.lucasemanuel.publiceconomy.threading.ConcurrentMySQLConnection;
-import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
+
+import se.lucasarnstrom.lucasutils.ConsoleLogger;
 
 public class MoneyManager {
 	
@@ -69,7 +70,7 @@ public class MoneyManager {
 	
 	public MoneyManager(Main instance) {
 		plugin   = instance;
-		logger   = new ConsoleLogger(instance, "MoneyManager");
+		logger   = new ConsoleLogger("MoneyManager");
 		
 		accounts = new HashMap<String, Double>();
 		

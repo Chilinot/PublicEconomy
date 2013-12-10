@@ -41,7 +41,8 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import me.lucasemanuel.publiceconomy.Main;
-import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
+
+import se.lucasarnstrom.lucasutils.ConsoleLogger;
 
 public class ScoreboardManager {
 	
@@ -52,7 +53,7 @@ public class ScoreboardManager {
 	
 	public ScoreboardManager(Main instance) {
 		plugin = instance;
-		logger = new ConsoleLogger(instance, "ScoreboardManager");
+		logger = new ConsoleLogger("ScoreboardManager");
 		
 		playerboards = new HashMap<String, Scoreboard>();
 		

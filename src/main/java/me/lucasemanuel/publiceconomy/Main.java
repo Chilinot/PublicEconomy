@@ -36,7 +36,8 @@ import me.lucasemanuel.publiceconomy.managers.ChestManager;
 import me.lucasemanuel.publiceconomy.managers.MoneyManager;
 import me.lucasemanuel.publiceconomy.managers.ScoreboardManager;
 import me.lucasemanuel.publiceconomy.threading.ConcurrentSQLiteConnection;
-import me.lucasemanuel.publiceconomy.utils.ConsoleLogger;
+
+import se.lucasarnstrom.lucasutils.ConsoleLogger;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -53,7 +54,7 @@ public class Main extends JavaPlugin {
 		
 		Config.load(this);
 		
-		logger = new ConsoleLogger(this, "Main");
+		logger = new ConsoleLogger("Main");
 		logger.debug("Initiating startup sequence!");
 		
 		
