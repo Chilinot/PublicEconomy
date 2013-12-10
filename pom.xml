@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.lucasemanuel</groupId>
   <artifactId>publiceconomy</artifactId>
-  <version>0.1</version>
+  <version>1.0</version>
   <name>PublicEconomy</name>
   <description>A basic economy system, created for publiclir.se.</description>
   
