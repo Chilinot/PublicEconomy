@@ -61,21 +61,23 @@ public class MoneyManager {
 	private Main plugin;
 	private ConsoleLogger logger;
 	
+	private FileConfiguration config;
+	
 	private ConcurrentMySQLConnection mysql;
 	
 	private HashMap<String, Double> accounts;
-	private HashMap<String, Double> item_values;
 	
 	public MoneyManager(Main instance) {
-		plugin = instance;
-		logger = new ConsoleLogger(instance, "MoneyManager");
+		plugin   = instance;
+		logger   = new ConsoleLogger(instance, "MoneyManager");
 		
-		accounts    = new HashMap<String, Double>();
-		item_values = new HashMap<String, Double>();
+		accounts = new HashMap<String, Double>();
 		
 		initiateMySQLConnector();
 		
-		loadValues();
+		config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "item_values.yml"));
+		checkDefaults(config);
+		
 		loadAccounts();
 		
 		logger.debug("Initiated");
@@ -111,19 +113,6 @@ public class MoneyManager {
 			for(Entry<String, Double> entry : loaded_accounts.entrySet()) {
 				accounts.put(entry.getKey(), entry.getValue());
 			}
-		}
-	}
-	
-	private void loadValues() {
-		
-		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "item_values.yml"));
-		
-		checkDefaults(config);
-		
-		// No need to store the values in a HashMap, can directly call them from config!
-		//TODO fix!
-		for(String item_name : config.getKeys(true)) {
-			item_values.put(item_name, config.getDouble(item_name));
 		}
 	}
 	
@@ -211,14 +200,14 @@ public class MoneyManager {
 	public double getValue(ItemStack i, boolean single) {
 		double value = 0.0d;
 		
-		double v = item_values.get("items." + i.getType().name());
+		double v = config.getDouble("items." + i.getType().name());
 		if(!single)
 			v *= i.getAmount();
 		
 		value += v;
 		
 		for(Entry<Enchantment, Integer> entry : i.getEnchantments().entrySet()) {
-			value += item_values.get("enchantments." + entry.getKey().getName()) * entry.getValue();
+			value += config.getDouble("enchantments." + entry.getKey().getName()) * entry.getValue();
 		}
 		
 		double max = i.getType().getMaxDurability();
