@@ -68,7 +68,8 @@ public class ChestManager {
 				if(l.getBlock().getType().equals(Material.CHEST))
 					shopchests.put(l, false);
 				else
-					logger.warning("Loaded a registered chest from storage that is no longer a chest!");
+					logger.warning("Loaded a registered chest from storage that is no longer a chest! "
+							+ "WORLD:\"" + l.getWorld().getName() + "\", X:" + l.getBlockX() + ", Y:" + l.getBlockY() + ", Z:" + l.getBlockZ());
 			}
 		}
 		else {
