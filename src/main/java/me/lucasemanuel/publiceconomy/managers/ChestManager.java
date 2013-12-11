@@ -34,9 +34,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import me.lucasemanuel.publiceconomy.Main;
-
 import se.lucasarnstrom.lucasutils.ConsoleLogger;
 import se.lucasarnstrom.lucasutils.SerializedLocation;;
 
@@ -64,7 +64,11 @@ public class ChestManager {
 		
 		if(locations != null) {
 			for(String string : locations) {
-				shopchests.put(SerializedLocation.deserializeString(string), false);
+				Location l = SerializedLocation.deserializeString(string);
+				if(l.getBlock().getType().equals(Material.CHEST))
+					shopchests.put(l, false);
+				else
+					logger.warning("Loaded a registered chest from storage that is no longer a chest!");
 			}
 		}
 		else {
